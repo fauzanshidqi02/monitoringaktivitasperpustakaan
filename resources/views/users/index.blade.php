@@ -1,41 +1,10 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Master User</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.app')
 
+@section('title', 'Master User')
+
+@section('styles')
     <style>
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f7f6;
-            color: #1f2937;
-        }
-
-        .navbar {
-            background: #ffffff;
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .brand {
-            font-weight: bold;
-            color: #0f766e;
-            font-size: 18px;
-            text-decoration: none;
-        }
-
-        .container {
-            padding: 32px;
-        }
-
-        .card {
+        .user-card {
             background: #ffffff;
             padding: 24px;
             border-radius: 18px;
@@ -46,7 +15,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 16px;
             margin-bottom: 18px;
+        }
+
+        .header-row h1 {
+            margin: 0;
+            font-size: 30px;
+            color: #111827;
+        }
+
+        .header-row p {
+            margin: 6px 0 0;
+            color: #6b7280;
+            line-height: 1.5;
         }
 
         .btn {
@@ -58,6 +40,7 @@
             border: none;
             cursor: pointer;
             font-size: 14px;
+            white-space: nowrap;
         }
 
         .btn-primary {
@@ -65,9 +48,17 @@
             color: #ffffff;
         }
 
+        .btn-primary:hover {
+            background: #0d665f;
+        }
+
         .btn-warning {
             background: #f59e0b;
             color: #ffffff;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
         }
 
         .btn-danger {
@@ -75,9 +66,17 @@
             color: #ffffff;
         }
 
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
         .btn-secondary {
             background: #e5e7eb;
             color: #111827;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
         }
 
         .filter-box {
@@ -87,16 +86,33 @@
             margin-bottom: 20px;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 10px;
             border: 1px solid #d1d5db;
             border-radius: 8px;
+            font-size: 14px;
+            background: #ffffff;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15,118,110,0.12);
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 850px;
         }
 
         th {
@@ -104,12 +120,15 @@
             text-align: left;
             padding: 12px;
             border-bottom: 1px solid #e5e7eb;
+            color: #111827;
+            font-size: 14px;
         }
 
         td {
             padding: 12px;
             border-bottom: 1px solid #e5e7eb;
             vertical-align: middle;
+            font-size: 14px;
         }
 
         .badge {
@@ -117,6 +136,7 @@
             border-radius: 999px;
             font-size: 12px;
             font-weight: bold;
+            display: inline-block;
         }
 
         .badge-active {
@@ -130,9 +150,10 @@
         }
 
         .alert {
-            padding: 12px;
+            padding: 12px 14px;
             border-radius: 10px;
             margin-bottom: 16px;
+            line-height: 1.5;
         }
 
         .alert-success {
@@ -148,10 +169,11 @@
         .actions {
             display: flex;
             gap: 8px;
+            align-items: center;
         }
 
-        .pagination {
-            margin-top: 16px;
+        .actions form {
+            margin: 0;
         }
 
         .user-top {
@@ -160,12 +182,79 @@
             gap: 12px;
         }
 
-        .avatar {
+        .avatar-small {
             width: 36px;
             height: 36px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid #0f766e;
+        }
+
+        .avatar-placeholder {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #0f766e;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid #0f766e;
+        }
+
+        .pagination-custom {
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .pagination-links {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-links a,
+        .pagination-links span {
+            min-width: 34px;
+            height: 34px;
+            padding: 7px 10px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            text-decoration: none;
+            color: #374151;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+        }
+
+        .pagination-links a:hover {
+            background: #ecfdf5;
+            border-color: #0f766e;
+            color: #0f766e;
+        }
+
+        .pagination-links .active-page {
+            background: #0f766e;
+            color: #ffffff;
+            border-color: #0f766e;
+            font-weight: bold;
+        }
+
+        .pagination-links .disabled-page {
+            color: #9ca3af;
+            background: #f9fafb;
         }
 
         @media (max-width: 900px) {
@@ -176,34 +265,31 @@
             .header-row {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 12px;
+            }
+
+            .header-row .btn {
+                width: 100%;
+                text-align: center;
             }
 
             table {
                 font-size: 13px;
             }
+
+            .pagination-custom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/mobile-fix.css') }}">
-</head>
-<body>
+@endsection
 
-<nav class="navbar">
-    <a href="{{ route('dashboard') }}" class="brand">
-        Monitoring Aktivitas Perpustakaan
-    </a>
-
-    <div>
-        {{ auth()->user()->name }}
-    </div>
-</nav>
-
-<main class="container">
-    <div class="card">
+@section('content')
+    <div class="user-card">
         <div class="header-row">
             <div>
-                <h1 style="margin: 0;">Master User</h1>
-                <p style="margin: 6px 0 0; color: #6b7280;">
+                <h1>Master User</h1>
+                <p>
                     Kelola user yang boleh login menggunakan akun Gmail.
                 </p>
             </div>
@@ -226,7 +312,12 @@
         @endif
 
         <form method="GET" action="{{ route('users.index') }}" class="filter-box">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama atau email...">
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari nama atau email..."
+            >
 
             <select name="role_id">
                 <option value="">Semua Role</option>
@@ -239,8 +330,12 @@
 
             <select name="status">
                 <option value="">Semua Status</option>
-                <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Aktif</option>
-                <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Nonaktif</option>
+                <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>
+                    Aktif
+                </option>
+                <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>
+                    Nonaktif
+                </option>
             </select>
 
             <button type="submit" class="btn btn-secondary">
@@ -266,13 +361,21 @@
                             <td>
                                 <div class="user-top">
                                     @if($user->avatar)
-                                        <img src="{{ $user->avatar }}" class="avatar" alt="Avatar">
+                                        <img src="{{ $user->avatar }}" class="avatar-small" alt="Avatar">
+                                    @else
+                                        <div class="avatar-placeholder">
+                                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                                        </div>
                                     @endif
+
                                     <strong>{{ $user->name }}</strong>
                                 </div>
                             </td>
+
                             <td>{{ $user->email }}</td>
+
                             <td>{{ $user->role->name ?? '-' }}</td>
+
                             <td>
                                 @if($user->is_active)
                                     <span class="badge badge-active">Aktif</span>
@@ -280,9 +383,11 @@
                                     <span class="badge badge-inactive">Nonaktif</span>
                                 @endif
                             </td>
+
                             <td>
-                                {{ $user->last_login_at ? $user->last_login_at->format('d-m-Y H:i') : '-' }}
+                                {{ $user->last_login_at ? $user->last_login_at->timezone(config('app.timezone', 'Asia/Jakarta'))->format('d-m-Y H:i') : '-' }}
                             </td>
+
                             <td>
                                 <div class="actions">
                                     <a href="{{ route('users.edit', $user) }}" class="btn btn-warning">
@@ -292,6 +397,7 @@
                                     <form action="{{ route('users.destroy', $user) }}" method="POST" onsubmit="return confirm('Yakin hapus user ini?')">
                                         @csrf
                                         @method('DELETE')
+
                                         <button type="submit" class="btn btn-danger">
                                             Hapus
                                         </button>
@@ -309,11 +415,36 @@
                 </tbody>
             </table>
         </div>
-        <div class="pagination">
-            {{ $users->links() }}
-        </div>
-    </div>
-</main>
 
-</body>
-</html>
+        @if($users->hasPages())
+            <div class="pagination-custom">
+                <div class="pagination-info">
+                    Menampilkan {{ $users->firstItem() }} - {{ $users->lastItem() }}
+                    dari {{ $users->total() }} data
+                </div>
+
+                <div class="pagination-links">
+                    @if($users->onFirstPage())
+                        <span class="disabled-page">‹</span>
+                    @else
+                        <a href="{{ $users->previousPageUrl() }}">‹</a>
+                    @endif
+
+                    @foreach($users->getUrlRange(1, $users->lastPage()) as $page => $url)
+                        @if($page == $users->currentPage())
+                            <span class="active-page">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}">{{ $page }}</a>
+                        @endif
+                    @endforeach
+
+                    @if($users->hasMorePages())
+                        <a href="{{ $users->nextPageUrl() }}">›</a>
+                    @else
+                        <span class="disabled-page">›</span>
+                    @endif
+                </div>
+            </div>
+        @endif
+    </div>
+@endsection

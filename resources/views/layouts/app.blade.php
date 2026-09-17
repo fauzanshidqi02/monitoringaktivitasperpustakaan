@@ -520,6 +520,14 @@
 </script>
 
 @yield('scripts')
-
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/sw.js').catch(function () {
+                // Abaikan jika browser belum mendukung atau gagal register.
+            });
+        });
+    }
+</script>
 </body>
 </html>

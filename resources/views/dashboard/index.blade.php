@@ -1,258 +1,364 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard - Monitoring Aktivitas Perpustakaan</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.app')
 
-    <style>
-        * {
-            box-sizing: border-box;
+@section('title', 'Dashboard - Monitoring Aktivitas Perpustakaan')
+
+@section('styles')
+    .dashboard-panel {
+        background: #ffffff;
+        border-radius: 6px;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.07);
+        overflow: hidden;
+        margin-bottom: 24px;
+    }
+
+    .panel-strip {
+        height: 28px;
+        background: #0d6efd;
+    }
+
+    .filter-area {
+        padding: 24px 22px 16px;
+    }
+
+    .filter-label {
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .filter-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .filter-row select {
+        width: 320px;
+        max-width: 100%;
+        border: 1px solid #cbd5e1;
+        border-radius: 5px;
+        padding: 11px 12px;
+        font-size: 14px;
+        background: #ffffff;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 5px;
+        padding: 11px 18px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+    }
+
+    .btn-primary {
+        background: #0d6efd;
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background: #0b5ed7;
+    }
+
+    .chart-card {
+        margin: 8px 22px 26px;
+        padding: 18px 20px 24px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        background: #ffffff;
+    }
+
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        gap: 14px;
+    }
+
+    .chart-title {
+        font-size: 18px;
+        font-weight: 500;
+        color: #111827;
+    }
+
+    .view-report {
+        color: #0d6efd;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .view-report:hover {
+        text-decoration: underline;
+    }
+
+    .chart-wrapper {
+        position: relative;
+        height: 350px;
+        width: 100%;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-top: 22px;
+    }
+
+    .summary-card {
+        border-radius: 6px;
+        padding: 22px 24px;
+        color: #ffffff;
+        min-height: 112px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    }
+
+    .summary-blue {
+        background: #0d6efd;
+    }
+
+    .summary-gray {
+        background: #cfd4da;
+    }
+
+    .summary-green {
+        background: #28a745;
+    }
+
+    .summary-yellow {
+        background: #ffc107;
+    }
+
+    .summary-label {
+        font-size: 13px;
+        font-weight: bold;
+        line-height: 1.5;
+        text-transform: uppercase;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+    }
+
+    .summary-value {
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: 6px;
+        text-shadow: 0 2px 3px rgba(0,0,0,0.25);
+    }
+
+    @media (max-width: 1100px) {
+        .summary-grid {
+            grid-template-columns: repeat(2, 1fr);
         }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f7f6;
-            color: #1f2937;
+        .chart-wrapper {
+            height: 320px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .filter-row {
+            flex-direction: column;
+            align-items: stretch;
         }
 
-        .navbar {
-            background: #ffffff;
-            padding: 16px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #e5e7eb;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        .filter-row select,
+        .filter-row .btn {
+            width: 100%;
         }
 
-        .brand {
-            font-size: 18px;
-            font-weight: bold;
-            color: #0f766e;
-        }
-
-        .user-area {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #0f766e;
-        }
-
-        .user-name {
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .user-email {
-            font-size: 12px;
-            color: #6b7280;
-            margin-top: 2px;
-        }
-
-        .btn-logout {
-            border: none;
-            background: #ef4444;
-            color: #ffffff;
-            padding: 9px 14px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-logout:hover {
-            background: #dc2626;
-        }
-
-        .container {
-            padding: 32px;
-        }
-
-        .welcome-card {
-            background: #ffffff;
-            border-radius: 18px;
-            padding: 28px;
-            box-shadow: 0 10px 28px rgba(0,0,0,0.06);
-            margin-bottom: 24px;
-        }
-
-        .welcome-card h1 {
-            margin: 0 0 8px;
-            font-size: 26px;
-        }
-
-        .welcome-card p {
-            color: #6b7280;
-            margin: 0;
-            line-height: 1.6;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-        }
-
-        .stat-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 22px;
-            box-shadow: 0 8px 22px rgba(0,0,0,0.05);
-            border-left: 5px solid #0f766e;
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: #6b7280;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: bold;
-            color: #111827;
-        }
-
-        .menu-card {
-            margin-top: 24px;
-            background: #ffffff;
-            border-radius: 18px;
-            padding: 24px;
-            box-shadow: 0 8px 22px rgba(0,0,0,0.05);
-        }
-
-        .menu-card h2 {
-            margin-top: 0;
-            font-size: 20px;
-        }
-
-        .menu-list {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 14px;
-            margin-top: 16px;
-        }
-
-        .menu-item {
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
+        .chart-card {
+            margin: 8px 14px 20px;
             padding: 16px;
-            text-align: center;
-            font-weight: bold;
-            color: #0f766e;
-            background: #f9fafb;
         }
 
-        @media (max-width: 900px) {
-            .grid,
-            .menu-list {
-                grid-template-columns: 1fr;
-            }
-
-            .navbar {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
-            }
-
-            .user-area {
-                width: 100%;
-                justify-content: space-between;
-            }
+        .chart-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
         }
-    </style>
-</head>
-<body>
 
-<nav class="navbar">
-    <div class="brand">
-        Monitoring Aktivitas Perpustakaan
-    </div>
+        .chart-wrapper {
+            height: 280px;
+        }
 
-    <div class="user-area">
-        @if(auth()->user()->avatar)
-            <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="avatar">
-        @endif
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+@endsection
 
-        <div>
-            <div class="user-name">
-                {{ auth()->user()->name }}
-            </div>
-            <div class="user-email">
-                {{ auth()->user()->email }}
-                @if(auth()->user()->role)
-                    | {{ auth()->user()->role->name }}
-                @endif
-            </div>
+@section('content')
+    @php
+        $summary = $summary ?? [
+            'total' => 0,
+            'draft' => 0,
+            'submitted' => 0,
+            'on_review' => 0,
+            'revision' => 0,
+            'approved' => 0,
+            'completed' => 0,
+            'rejected' => 0,
+        ];
+
+        $perluReview = ($summary['submitted'] ?? 0)
+            + ($summary['on_review'] ?? 0)
+            + ($summary['revision'] ?? 0);
+
+        $years = $years ?? collect([now()->format('Y')]);
+        $selectedYear = $selectedYear ?? now()->format('Y');
+    @endphp
+
+    <h1 class="page-title">
+        Statistik Aktivitas Perpustakaan
+    </h1>
+
+    <section class="dashboard-panel">
+        <div class="panel-strip"></div>
+
+        <div class="filter-area">
+            <form action="{{ route('dashboard') }}" method="GET">
+                <label class="filter-label">Tahun</label>
+
+                <div class="filter-row">
+                    <select name="year">
+                        @foreach($years as $year)
+                            <option value="{{ $year }}" {{ (int) $selectedYear === (int) $year ? 'selected' : '' }}>
+                                {{ $year }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <button type="submit" class="btn btn-primary">
+                        Tampilkan
+                    </button>
+                </div>
+            </form>
         </div>
 
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="btn-logout">
-                Logout
-            </button>
-        </form>
-    </div>
-</nav>
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="chart-title">
+                    Statistik Aktivitas Tahun {{ $selectedYear }}
+                </div>
 
-<main class="container">
-    <section class="welcome-card">
-        <h1>Dashboard</h1>
-        <p>
-            Login berhasil. Ini halaman awal sistem monitoring aktivitas perpustakaan.
-            Setelah ini kita lanjutkan ke CRUD user, role, modul aktivitas, dan input aktivitas manual.
-        </p>
+                <a href="{{ route('reports.activities', [
+                    'date_from' => $selectedYear . '-01-01',
+                    'date_to' => $selectedYear . '-12-31'
+                ]) }}" class="view-report">
+                    View Report
+                </a>
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="activityChart"></canvas>
+            </div>
+        </div>
     </section>
 
-    <section class="grid">
-        <div class="stat-card">
-            <div class="stat-label">Status Akun</div>
-            <div class="stat-value">Aktif</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-label">Role</div>
-            <div class="stat-value">
-                {{ auth()->user()->role->name ?? '-' }}
+    <section class="summary-grid">
+        <div class="summary-card summary-blue">
+            <div class="summary-label">
+                Total<br>Aktivitas
+            </div>
+            <div class="summary-value">
+                {{ $summary['total'] ?? 0 }}
             </div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-label">Login Terakhir</div>
-            <div class="stat-value">
-                {{ auth()->user()->last_login_at ? auth()->user()->last_login_at->format('d-m-Y H:i') : '-' }}
+        <div class="summary-card summary-gray">
+            <div class="summary-label">
+                Perlu<br>Review
+            </div>
+            <div class="summary-value">
+                {{ $perluReview }}
+            </div>
+        </div>
+
+        <div class="summary-card summary-green">
+            <div class="summary-label">
+                Total<br>Approved
+            </div>
+            <div class="summary-value">
+                {{ $summary['approved'] ?? 0 }}
+            </div>
+        </div>
+
+        <div class="summary-card summary-yellow">
+            <div class="summary-label">
+                Total<br>Completed
+            </div>
+            <div class="summary-value">
+                {{ $summary['completed'] ?? 0 }}
             </div>
         </div>
     </section>
+@endsection
 
-    <section class="menu-card">
-        <h2>Menu Sistem</h2>
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <div class="menu-list">
-            <a href="{{ route('users.index') }}" class="menu-item" style="text-decoration: none;">
-                Master User
-            </a>
-            <a href="{{ route('roles.index') }}" class="menu-item" style="text-decoration: none;">
-                Role
-            </a>
-            <a href="{{ route('modules.index') }}" class="menu-item" style="text-decoration: none;">
-                 Modul Aktivitas
-            </a>
-            <a href="{{ route('activity-categories.index') }}" class="menu-item" style="text-decoration: none;">
-                Jenis Aktivitas
-            </a>
-            <div class="menu-item">Laporan</div>
-        </div>
-    </section>
-</main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('activityChart');
 
-</body>
-</html>
+            if (!ctx) {
+                return;
+            }
+
+            const chartLabels = @json($chartLabels ?? []);
+            const chartDatasets = @json($chartDatasets ?? []);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: chartDatasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                boxWidth: 35,
+                                padding: 18
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y + ' aktivitas';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.08)'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.08)'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+@endsection

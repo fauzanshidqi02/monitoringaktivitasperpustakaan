@@ -174,6 +174,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-fix.css') }}">
 </head>
 <body>
 
@@ -230,59 +231,60 @@
             </button>
         </form>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Urutan</th>
-                    <th>Nama Modul</th>
-                    <th>Slug</th>
-                    <th>Deskripsi</th>
-                    <th>Status</th>
-                    <th width="170">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($modules as $module)
+        <div class="table-responsive">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $module->sort_order }}</td>
-                        <td><strong>{{ $module->name }}</strong></td>
-                        <td>
-                            <span class="badge badge-slug">{{ $module->slug }}</span>
-                        </td>
-                        <td>{{ $module->description ?? '-' }}</td>
-                        <td>
-                            @if($module->is_active)
-                                <span class="badge badge-active">Aktif</span>
-                            @else
-                                <span class="badge badge-inactive">Nonaktif</span>
-                            @endif
-                        </td>
-                        <td>
-                            <div class="actions">
-                                <a href="{{ route('modules.edit', $module) }}" class="btn btn-warning">
-                                    Edit
-                                </a>
-
-                                <form action="{{ route('modules.destroy', $module) }}" method="POST" onsubmit="return confirm('Yakin hapus modul ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">
-                                        Hapus
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                        <th>Urutan</th>
+                        <th>Nama Modul</th>
+                        <th>Slug</th>
+                        <th>Deskripsi</th>
+                        <th>Status</th>
+                        <th width="170">Aksi</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: #6b7280;">
-                            Belum ada data modul.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse($modules as $module)
+                        <tr>
+                            <td>{{ $module->sort_order }}</td>
+                            <td><strong>{{ $module->name }}</strong></td>
+                            <td>
+                                <span class="badge badge-slug">{{ $module->slug }}</span>
+                            </td>
+                            <td>{{ $module->description ?? '-' }}</td>
+                            <td>
+                                @if($module->is_active)
+                                    <span class="badge badge-active">Aktif</span>
+                                @else
+                                    <span class="badge badge-inactive">Nonaktif</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{{ route('modules.edit', $module) }}" class="btn btn-warning">
+                                        Edit
+                                    </a>
 
+                                    <form action="{{ route('modules.destroy', $module) }}" method="POST" onsubmit="return confirm('Yakin hapus modul ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #6b7280;">
+                                Belum ada data modul.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
         <div style="margin-top: 16px;">
             {{ $modules->links() }}
         </div>

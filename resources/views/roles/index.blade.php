@@ -135,6 +135,7 @@
             align-items: center;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-fix.css') }}">
 </head>
 <body>
 
@@ -176,50 +177,52 @@
             </div>
         @endif
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Nama Role</th>
-                    <th>Slug</th>
-                    <th>Deskripsi</th>
-                    <th>Jumlah User</th>
-                    <th width="170">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($roles as $role)
+        <div class="table-responsive">
+            <table>
+                <thead>
                     <tr>
-                        <td><strong>{{ $role->name }}</strong></td>
-                        <td>
-                            <span class="badge">{{ $role->slug }}</span>
-                        </td>
-                        <td>{{ $role->description ?? '-' }}</td>
-                        <td>{{ $role->users_count }}</td>
-                        <td>
-                            <div class="actions">
-                                <a href="{{ route('roles.edit', $role) }}" class="btn btn-warning">
-                                    Edit
-                                </a>
+                        <th>Nama Role</th>
+                        <th>Slug</th>
+                        <th>Deskripsi</th>
+                        <th>Jumlah User</th>
+                        <th width="170">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($roles as $role)
+                        <tr>
+                            <td><strong>{{ $role->name }}</strong></td>
+                            <td>
+                                <span class="badge">{{ $role->slug }}</span>
+                            </td>
+                            <td>{{ $role->description ?? '-' }}</td>
+                            <td>{{ $role->users_count }}</td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{{ route('roles.edit', $role) }}" class="btn btn-warning">
+                                        Edit
+                                    </a>
 
-                                <form action="{{ route('roles.destroy', $role) }}" method="POST" onsubmit="return confirm('Yakin hapus role ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">
-                                        Hapus
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" style="text-align: center; color: #6b7280;">
-                            Belum ada data role.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                                    <form action="{{ route('roles.destroy', $role) }}" method="POST" onsubmit="return confirm('Yakin hapus role ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #6b7280;">
+                                Belum ada data role.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
         <div style="margin-top: 16px;">
             {{ $roles->links() }}

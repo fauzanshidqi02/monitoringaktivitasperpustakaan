@@ -219,6 +219,7 @@
             cursor: not-allowed;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-fix.css') }}">
 </head>
 <body>
 
@@ -285,67 +286,68 @@
             </button>
         </form>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Urutan</th>
-                    <th>Modul</th>
-                    <th>Jenis Aktivitas</th>
-                    <th>Slug</th>
-                    <th>Deskripsi</th>
-                    <th>Status</th>
-                    <th width="170">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($categories as $category)
+        <div class="table-responsive">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $category->sort_order }}</td>
-                        <td>
-                            <span class="badge badge-module">
-                                {{ $category->module->name ?? '-' }}
-                            </span>
-                        </td>
-                        <td><strong>{{ $category->name }}</strong></td>
-                        <td>
-                            <span class="badge badge-slug">
-                                {{ $category->slug }}
-                            </span>
-                        </td>
-                        <td>{{ $category->description ?? '-' }}</td>
-                        <td>
-                            @if($category->is_active)
-                                <span class="badge badge-active">Aktif</span>
-                            @else
-                                <span class="badge badge-inactive">Nonaktif</span>
-                            @endif
-                        </td>
-                        <td>
-                            <div class="actions">
-                                <a href="{{ route('activity-categories.edit', $category) }}" class="btn btn-warning">
-                                    Edit
-                                </a>
-
-                                <form action="{{ route('activity-categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Yakin hapus jenis aktivitas ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">
-                                        Hapus
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                        <th>Urutan</th>
+                        <th>Modul</th>
+                        <th>Jenis Aktivitas</th>
+                        <th>Slug</th>
+                        <th>Deskripsi</th>
+                        <th>Status</th>
+                        <th width="170">Aksi</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" style="text-align: center; color: #6b7280;">
-                            Belum ada data jenis aktivitas.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse($categories as $category)
+                        <tr>
+                            <td>{{ $category->sort_order }}</td>
+                            <td>
+                                <span class="badge badge-module">
+                                    {{ $category->module->name ?? '-' }}
+                                </span>
+                            </td>
+                            <td><strong>{{ $category->name }}</strong></td>
+                            <td>
+                                <span class="badge badge-slug">
+                                    {{ $category->slug }}
+                                </span>
+                            </td>
+                            <td>{{ $category->description ?? '-' }}</td>
+                            <td>
+                                @if($category->is_active)
+                                    <span class="badge badge-active">Aktif</span>
+                                @else
+                                    <span class="badge badge-inactive">Nonaktif</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{{ route('activity-categories.edit', $category) }}" class="btn btn-warning">
+                                        Edit
+                                    </a>
 
+                                    <form action="{{ route('activity-categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Yakin hapus jenis aktivitas ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: #6b7280;">
+                                Belum ada data jenis aktivitas.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
         @if ($categories->hasPages())
         <div class="pagination-info">
             Menampilkan {{ $categories->firstItem() }} sampai {{ $categories->lastItem() }}

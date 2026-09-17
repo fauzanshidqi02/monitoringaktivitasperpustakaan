@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -43,5 +44,13 @@ class User extends Authenticatable
     public function hasRole(string $roleSlug): bool
     {
         return $this->role?->slug === $roleSlug;
+    }
+    public function createdActivities(): HasMany
+    {
+        return $this->hasMany(Activity::class, 'created_by');
+    }
+    public function assignedActivities(): HasMany
+    {
+        return $this->hasMany(Activity::class, 'assigned_to');
     }
 }

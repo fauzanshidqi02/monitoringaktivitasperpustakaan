@@ -23,7 +23,9 @@ class GoogleAuthController extends Controller
 
     public function redirectToGoogle(): RedirectResponse
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')
+            ->scopes(['openid', 'profile', 'email'])
+            ->redirect();
     }
 
     public function handleGoogleCallback(Request $request): RedirectResponse
@@ -31,7 +33,15 @@ class GoogleAuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
 
-            $user = User::where('email', $googleUser->getEmail())->first();
+            $email = strtolower(trim($googleUser->getEmail()));
+
+            if (!$email) {
+                return redirect()
+                    ->route('login')
+                    ->with('error', 'Email Google tidak terbaca. Silakan coba login ulang.');
+            }
+
+            $user = User::where('email', $email)->first();
 
             if (!$user) {
                 return redirect()
@@ -55,7 +65,9 @@ class GoogleAuthController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->intended(route('dashboard'));
+            return redirect()
+                ->intended(route('dashboard'))
+                ->with('success', 'Login berhasil. Selamat datang, ' . $user->name . '.');
         } catch (Exception $e) {
             return redirect()
                 ->route('login')

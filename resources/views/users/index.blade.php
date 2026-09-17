@@ -184,6 +184,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-fix.css') }}">
 </head>
 <body>
 
@@ -247,66 +248,67 @@
             </button>
         </form>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Login Terakhir</th>
-                    <th width="170">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($users as $user)
+        <div class="table-responsive">
+            <table>
+                <thead>
                     <tr>
-                        <td>
-                            <div class="user-top">
-                                @if($user->avatar)
-                                    <img src="{{ $user->avatar }}" class="avatar" alt="Avatar">
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Login Terakhir</th>
+                        <th width="170">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($users as $user)
+                        <tr>
+                            <td>
+                                <div class="user-top">
+                                    @if($user->avatar)
+                                        <img src="{{ $user->avatar }}" class="avatar" alt="Avatar">
+                                    @endif
+                                    <strong>{{ $user->name }}</strong>
+                                </div>
+                            </td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ $user->role->name ?? '-' }}</td>
+                            <td>
+                                @if($user->is_active)
+                                    <span class="badge badge-active">Aktif</span>
+                                @else
+                                    <span class="badge badge-inactive">Nonaktif</span>
                                 @endif
-                                <strong>{{ $user->name }}</strong>
-                            </div>
-                        </td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->role->name ?? '-' }}</td>
-                        <td>
-                            @if($user->is_active)
-                                <span class="badge badge-active">Aktif</span>
-                            @else
-                                <span class="badge badge-inactive">Nonaktif</span>
-                            @endif
-                        </td>
-                        <td>
-                            {{ $user->last_login_at ? $user->last_login_at->format('d-m-Y H:i') : '-' }}
-                        </td>
-                        <td>
-                            <div class="actions">
-                                <a href="{{ route('users.edit', $user) }}" class="btn btn-warning">
-                                    Edit
-                                </a>
+                            </td>
+                            <td>
+                                {{ $user->last_login_at ? $user->last_login_at->format('d-m-Y H:i') : '-' }}
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{{ route('users.edit', $user) }}" class="btn btn-warning">
+                                        Edit
+                                    </a>
 
-                                <form action="{{ route('users.destroy', $user) }}" method="POST" onsubmit="return confirm('Yakin hapus user ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">
-                                        Hapus
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: #6b7280;">
-                            Belum ada data user.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-
+                                    <form action="{{ route('users.destroy', $user) }}" method="POST" onsubmit="return confirm('Yakin hapus user ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #6b7280;">
+                                Belum ada data user.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
         <div class="pagination">
             {{ $users->links() }}
         </div>

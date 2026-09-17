@@ -91,6 +91,7 @@
             width: auto;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/mobile-fix.css') }}">
 </head>
 <body>
 

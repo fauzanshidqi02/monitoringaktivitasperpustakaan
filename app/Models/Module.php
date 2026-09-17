@@ -23,4 +23,8 @@ class Module extends Model
     {
         return $this->hasMany(ActivityCategory::class);
     }
+    public function activities(): HasMany
+    {
+        return $this->hasMany(Activity::class);
+    }
 }
